@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
-// export const generateJwtToken = async (id: string) => {
-//     const token = await jwt.sign({ _id: id.toString() }, process.env.JWT_SEC);
-//     return token;
-// }
+export const GenerateJwtToken = (id: string) => {
+    const token = jwt.sign({ _id: id.toString() }, process.env.JWT_SEC || "");
+    return token;
+}
 
 // export async function verifyJwtToken( token: string, req: Request, res: Response, next: NextFunction ) {
 //     try {

@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 
-export async function HashPassword(password: string) {
+export async function hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 8);
 }
 
-export async function VerifyPassword(password: string, hashPassword: string) {
+export async function verifyPassword(password: string, hashPassword: string): Promise<boolean> {
     return await bcrypt.compare(password, hashPassword)
 }

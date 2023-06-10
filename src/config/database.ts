@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { DatabaseConnectionError } from "../middleware/error-handler";
-require('dotenv').config();
 
 const mongoURL = process.env.MONGO_URL || "";
 

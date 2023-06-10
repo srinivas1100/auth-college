@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
-import User from "./model";
-import { VerifyPassword } from "../../middleware/hash-password";
+import e, { Request, Response } from "express";
+import User, { IUser } from "./model";
+import { verifyPassword } from "../../middleware/hash-password";
+import { DatabaseConnectionError, errorHandler } from "../../middleware/error-handler";
 // import User from "../schemas/user";
 // import { hashPassword, verifyPassword } from "../helpers/bcrypt-helpers";
 // import { errorFormeter, commonError } from "../helpers/api-error-handler";
@@ -9,16 +10,17 @@ import { VerifyPassword } from "../../middleware/hash-password";
 // import ApiSuccess from "../helpers/api-success";
 // import UserValidationMessages from "../helpers/messages/user-validation-messages";
 
- export const GetAllUsers = async (req: Request, res: Response) => {
+ export async function getAllUsers  (req: Request, res: Response)  {
   try {
     // throw new DatabaseConnectionError();
     const user = await User.find();
     if (!user) return res.status(300).send("some error id comming");
-    res.status(200).send(user);
+   return res.status(200).send(user);
     // return ApiSuccess.sucessResponse({ res: res, object: user });
   } catch (error) {
     // return commonError({ res: res, error: error });
-    res.status(200).send(error);
+   return errorHandler(error as Error, req, res);
+   //return res.status(200).send(error);
   }
 };
 interface CreateUserRequest {
@@ -26,20 +28,20 @@ interface CreateUserRequest {
   password: string;
 }
 
-export const SigninUser = async (req: Request<{}, {}, CreateUserRequest>, res: Response) => {
+export async function signinUser  (req: Request<{}, {}, CreateUserRequest>, res: Response): Promise<Response>  {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(404).send({"message": "user not found"});
-    const ismatch = await VerifyPassword(req.body.password, user.password);
+    const ismatch = await verifyPassword(req.body.password, user.password);
     if (!ismatch) return res.status(404).send({"message": "un authorized"});
-    // await user.generateToken();
+    user.generateToken();
     return res.status(200).send(user);
   } catch (error) {
     return  res.status(200).send(error);
   }
 };
 
-export const GetSingleUser = async (req: Request, res: Response) => {
+export async function getSingleUser (req: Request, res: Response): Promise<Response>  {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).send({"message": "user not found"});
@@ -51,10 +53,11 @@ export const GetSingleUser = async (req: Request, res: Response) => {
   }
 };
 
-export const InsertUser = async (req: Request, res: Response) => {
+export async function insertUser (req: Request, res: Response): Promise<Response>  {
   try {
     const user = new User(req.body);
     const saveUser = await user.save();
+    // console.log(saveUser);
     return res.status(200).send(saveUser);
   } catch (error) {
     return  res.status(200).send(error);
@@ -115,11 +118,12 @@ export const InsertUser = async (req: Request, res: Response) => {
 //     }
 //   };
   
-  export const DeleteUser = async (req: Request, res: Response): Promise<Response> => {
+  export async function deleteUser (req: Request, res: Response): Promise<Response>  {
     try {
       const user = await User.deleteOne({ _id: req.params.id });
       return res.status(200).send({"message": "user deleted successfully"});
       // return ApiSuccess.sucessResponse({ res, object: user, message: UserValidationMessages.DELETE_USER_MESSAGE });
+      // return null;
     } catch (error) {
       return   res.status(200).send(error);
     }
