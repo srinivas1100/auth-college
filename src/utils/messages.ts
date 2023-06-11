@@ -26,3 +26,4 @@ export const EMAIL_ALL_READY_EXISTS = "This email is all ready exists";
 export const VALID_EMAIL_ADDRESS = "Please provide a valid email address";
 export const PHONE_NUMBER_IS_REQUIRED = "Phone number is required";
 export const DELETE_USER_MESSAGE = "User deleted successfully";
+export const USER_RETRIVED_SUCCESSFULLY ="Users retrieved successfully";

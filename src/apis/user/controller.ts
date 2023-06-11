@@ -3,7 +3,7 @@ import User, { IUser } from "./model";
 import { verifyPassword } from "../../middleware/hash-password";
 import { Error } from "mongoose";
 import { DatabaseConnectionError, errorHandler, handleApiError, sendApiErrorResponse, sendApiResponse } from "../../middleware/error-handler";
-import { PASSWORD_INCORRECT } from "../../utils/messages";
+import { DELETE_USER_MESSAGE, PASSWORD_INCORRECT, USER_NOT_FOUND, USER_RETRIVED_SUCCESSFULLY } from "../../utils/messages";
 // import User from "../schemas/user";
 // import { hashPassword, verifyPassword } from "../helpers/bcrypt-helpers";
 // import { errorFormeter, commonError } from "../helpers/api-error-handler";
@@ -34,7 +34,7 @@ export async function signinUser  (req: Request, res: Response): Promise<Respons
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) return sendApiResponse({
-      res: res, statusCode : 404, data: user,message:  "user not found"
+      res: res, statusCode : 404, data: user,message:  USER_NOT_FOUND
     });
     
    
@@ -58,17 +58,11 @@ export async function getSingleUser (req: Request, res: Response): Promise<Respo
   try {
     const user = await User.findById(req.params.id);
     if (!user) return  sendApiResponse({
-      res: res, statusCode : 404, data: user,message:  "user not found"
+      res: res, statusCode : 404, data: user,message:  USER_NOT_FOUND
     });
-    
-
-    // if (!user) return ApiError.noResorseFound({ res: res });
     return  sendApiResponse({
-      res: res, statusCode : 200, data: user,message:  "Users retrieved successfully"
+      res: res, statusCode : 200, data: user,message:  USER_RETRIVED_SUCCESSFULLY
     });
-    
-
-    // return ApiSuccess.sucessResponse({ res: res, object: user });
   } catch (error) {
     return  sendApiResponse({
       res: res, statusCode : 400, data: error,message:  "Failed"
@@ -146,7 +140,7 @@ export async function insertUser (req: Request, res: Response): Promise<Response
     try {
       const user = await User.deleteOne({ _id: req.params.id });
       return sendApiResponse({
-        res: res, statusCode : 200, data: user,message:  "user deleted successfully"
+        res: res, statusCode : 200, data: user,message:  DELETE_USER_MESSAGE
       });
       
   

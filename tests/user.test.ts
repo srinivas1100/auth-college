@@ -5,7 +5,7 @@ import app from "../src/app";
 import User from "../src/apis/user/model";
 import { GET_ALL_USERS, SIGNIN_USERS } from "../src/utils/constants";
 import mongoose from "mongoose";
-import { AN_UNEXPECTED_ERROR_OCCURRED, PASSWORD_INCORRECT, USER_NOT_FOUND, VALIDATION_ERROR } from "../src/utils/messages";
+import { AN_UNEXPECTED_ERROR_OCCURRED, DELETE_USER_MESSAGE, PASSWORD_INCORRECT, USER_NOT_FOUND, VALIDATION_ERROR } from "../src/utils/messages";
 
 // const request = require("supertest");
 // const app = require("../src/app");
@@ -122,25 +122,42 @@ describe('User Login API', () => {
     })
 })
 
-// describe('Get single user profile API', () => {
-//     it("User profile success", async function () {
-//         const response = await request(app).get("/user/me").set('Authorization', `Bearer ${testUserToken}`)
-//         expect(response.statusCode).toEqual(200);
-//         expect(response.body.object.email).toEqual(testUser1.email);
-//     });
-//     it("User profile success", async function () {
-//         const response = await request(app).get("/user/me").set('Authorization', `Bearer ${noResorseFoundToken}`)
-//         expect(response.statusCode).toEqual(400);
-//         expect(response.body.message).toEqual(GlobalValidationMessages.NO_USER_FOUND_ERROR);
-//         expect(response.body.error).toEqual(GlobalValidationMessages.USER_EMAIL_DOES_NOT_EXISTS_MESSAGE);
-//     });
-//     it("User not authorized", async function () {
-//         const response = await request(app).get("/user/me").set('Authorization', `Bearer a`)
-//         expect(response.statusCode).toEqual(401);
-//         expect(response.body.message).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR);
-//         expect(response.body.error).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR_MESSAGE);
-//     });
-// })
+describe('Get single user profile API', () => {
+    it("User profile success", async function () {
+        const response = await request(app).post(`${GET_ALL_USERS}/${testUser._id}`)
+        console.log(response);
+        // .set('Authorization', `Bearer ${testUserToken}`)
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.data.email).toEqual(testUser.email);
+    });
+    // it("User profile success", async function () {
+    //     const response = await request(app).get("/user/me").set('Authorization', `Bearer ${noResorseFoundToken}`)
+    //     expect(response.statusCode).toEqual(400);
+    //     expect(response.body.message).toEqual(GlobalValidationMessages.NO_USER_FOUND_ERROR);
+    //     expect(response.body.error).toEqual(GlobalValidationMessages.USER_EMAIL_DOES_NOT_EXISTS_MESSAGE);
+    // });
+    // it("User not authorized", async function () {
+    //     const response = await request(app).get("/user/me").set('Authorization', `Bearer a`)
+    //     expect(response.statusCode).toEqual(401);
+    //     expect(response.body.message).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR);
+    //     expect(response.body.error).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR_MESSAGE);
+    // });
+})
+
+describe('Delete user API', () => {
+    it('Delete user success response', async function () {
+        const response = await request(app).delete(`${GET_ALL_USERS}/${testUser._id}`)
+        // .set('Authorization', `Bearer ${testUserToken}`);
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.message).toEqual(DELETE_USER_MESSAGE);
+    });
+    // it("User not authorized", async function () {
+    //     const response = await request(app).delete("/user").set('Authorization', `Bearer ${noResorseFoundToken}a`);
+    //     expect(response.statusCode).toEqual(401);
+    //     expect(response.body.message).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR);
+    //     expect(response.body.error).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR_MESSAGE);
+    // });
+})
 
 // describe('Update user profile API', () => {
 //     it('Update user profile success', async function () {
@@ -196,16 +213,3 @@ describe('User Login API', () => {
 //     });
 // })
 
-// describe('Delete user API', () => {
-//     it('Delete user success response', async function () {
-//         const response = await request(app).delete("/user").set('Authorization', `Bearer ${testUserToken}`);
-//         expect(response.statusCode).toEqual(200);
-//         expect(response.body.message).toEqual(UserValidationMessages.DELETE_USER_MESSAGE);
-//     });
-//     it("User not authorized", async function () {
-//         const response = await request(app).delete("/user").set('Authorization', `Bearer ${noResorseFoundToken}a`);
-//         expect(response.statusCode).toEqual(401);
-//         expect(response.body.message).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR);
-//         expect(response.body.error).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR_MESSAGE);
-//     });
-// })
