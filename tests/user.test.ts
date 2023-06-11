@@ -5,6 +5,7 @@ import app from "../src/app";
 import User from "../src/apis/user/model";
 import { GET_ALL_USERS } from "../src/utils/constants";
 import mongoose from "mongoose";
+import { AN_UNEXPECTED_ERROR_OCCURRED, VALIDATION_ERROR } from "../src/utils/messages";
 
 // const request = require("supertest");
 // const app = require("../src/app");
@@ -23,6 +24,9 @@ beforeAll(async () => {
 });
 
 const testUserId =  new mongoose.Types.ObjectId();
+const testUserId2 =  new mongoose.Types.ObjectId();
+const testUserId3 =  new mongoose.Types.ObjectId();
+const testUserId4 =  new mongoose.Types.ObjectId();
 
 const testUser = {
     "_id": testUserId,
@@ -32,10 +36,33 @@ const testUser = {
     "phoneNumber": "9876543210"
 }
 
+const userEmailRequired = {
+    "_id": testUserId2,
+    "password": "123456",
+    "name": "test firstname",
+    "phoneNumber": "9876543210"
+}
+
+const userEmailExists = {
+    "_id": testUserId3,
+    "email": "test@gmail.com",
+    "password": "123456",
+    "name": "test firstname",
+    "phoneNumber": "9876543210"
+}
+
+const validEmailAddress = {
+    "_id": testUserId4,
+    "email": "testgmail.com",
+    "password": "123456",
+    "name": "test firstname",
+    "phoneNumber": "9876543210"
+}
+
+
 
 describe('GET all user data', () => {
     it("SUCESS RESPONSE", async function () {
-        // expect(true).toBe(true);
         const response = await request(app).get(GET_ALL_USERS);
         expect(response.statusCode).toEqual(200);
     })
@@ -44,32 +71,26 @@ describe('GET all user data', () => {
 describe('User Register API', () => {
     it("Sucess registation", async function () {
         const response = await request(app).post(GET_ALL_USERS).send(testUser);
-        expect(response.body._id).toEqual(testUserId.toString());
+        expect(response.body.data._id).toEqual(testUserId.toString());
     });
-    // it("Email is required", async function () {
-    //     const response = await request(app).post("/user").send(userEmailRequired);
-    //     expect(response.statusCode).toEqual(404);
-    //     expect(response.body.code).toEqual(404);
-    //     expect(response.body.message).toEqual(UserValidationMessages.VALIDATION_ERROR);
-    // })
-    // it("Email is allready exists", async function () {
-    //     const response = await request(app).post("/user").send(emailExists);
-    //     expect(response.statusCode).toEqual(400);
-    //     expect(response.body.code).toEqual(400);
-    //     expect(response.body.message).toEqual(UserValidationMessages.SOMTING_WENT_WRONG_ERROR);
-    // })
-    // it("Enter valid email", async function () {
-    //     const response = await request(app).post("/user").send(enterValidEmail);
-    //     expect(response.statusCode).toEqual(404);
-    //     expect(response.body.code).toEqual(404);
-    //     expect(response.body.message).toEqual(UserValidationMessages.VALIDATION_ERROR);
-    // })
-    // it("Phone number required", async function () {
-    //     const response = await request(app).post("/user").send(phoneNumberRequired);
-    //     expect(response.statusCode).toEqual(404);
-    //     expect(response.body.code).toEqual(404);
-    //     expect(response.body.message).toEqual(UserValidationMessages.VALIDATION_ERROR);
-    // })
+    it("Email is required", async function () {
+        const response = await request(app).post(GET_ALL_USERS).send(userEmailRequired);
+        expect(response.statusCode).toEqual(400);
+        expect(response.body.statusCode).toEqual(400);
+        expect(response.body.message).toEqual(VALIDATION_ERROR);
+    })
+    it("Email is allready exists", async function () {
+        const response = await request(app).post(GET_ALL_USERS).send(userEmailExists);
+        expect(response.statusCode).toEqual(401);
+        expect(response.body.statusCode).toEqual(401);
+        expect(response.body.message).toEqual(AN_UNEXPECTED_ERROR_OCCURRED);
+    })
+    it("Enter valid email", async function () {
+        const response = await request(app).post(GET_ALL_USERS).send(validEmailAddress);
+        expect(response.statusCode).toEqual(400);
+        expect(response.body.statusCode).toEqual(400);
+        expect(response.body.message).toEqual(VALIDATION_ERROR);
+    })
 })
 
 // describe('User Login API', () => {
@@ -99,7 +120,6 @@ describe('User Register API', () => {
 //         expect(response.body.message).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR);
 //         expect(response.body.error).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR_MESSAGE);
 //     })
-
 // })
 
 // describe('Get single user profile API', () => {

@@ -20,6 +20,7 @@ export const ROUTE_NOT_FOUND_MESSAGE = "Route not found user types";
 export const SOMTING_WENT_WRONG_ERROR = "somthing went wrong";
 export const VALIDATION_ERROR = "validation error";
 export const EMAIL_IS_REQUIRED = "Email is required";
+export const AN_UNEXPECTED_ERROR_OCCURRED = "An unexpected error occurred";
 export const EMAIL_ALL_READY_EXISTS = "This email is all ready exists";
 export const VALID_EMAIL_ADDRESS = "Please provide a valid email address";
 export const PHONE_NUMBER_IS_REQUIRED = "Phone number is required";

@@ -1,7 +1,8 @@
 import e, { Request, Response } from "express";
 import User, { IUser } from "./model";
 import { verifyPassword } from "../../middleware/hash-password";
-import { DatabaseConnectionError, errorHandler } from "../../middleware/error-handler";
+import { Error } from "mongoose";
+import { DatabaseConnectionError, errorHandler, handleApiError, sendApiErrorResponse, sendApiResponse } from "../../middleware/error-handler";
 // import User from "../schemas/user";
 // import { hashPassword, verifyPassword } from "../helpers/bcrypt-helpers";
 // import { errorFormeter, commonError } from "../helpers/api-error-handler";
@@ -12,44 +13,65 @@ import { DatabaseConnectionError, errorHandler } from "../../middleware/error-ha
 
  export async function getAllUsers  (req: Request, res: Response)  {
   try {
-    // throw new DatabaseConnectionError();
     const user = await User.find();
-    if (!user) return res.status(300).send("some error id comming");
-   return res.status(200).send(user);
-    // return ApiSuccess.sucessResponse({ res: res, object: user });
+    if (!user) return sendApiResponse({
+      res: res, statusCode : 300, data: user,message:  "some error id comming"
+    });
+  
+   return sendApiResponse({
+     res: res, statusCode : 200, data: user,message:  "Users retrieved successfully"
+   });
+
   } catch (error) {
-    // return commonError({ res: res, error: error });
-   return errorHandler(error as Error, req, res);
-   //return res.status(200).send(error);
+   return sendApiResponse({
+    res: res, statusCode : 400, data: error,message:  "Users retrieved successfully"
+  });
   }
 };
-interface CreateUserRequest {
-  email: string;
-  password: string;
-}
 
-export async function signinUser  (req: Request<{}, {}, CreateUserRequest>, res: Response): Promise<Response>  {
+export async function signinUser  (req: Request, res: Response): Promise<Response>  {
   try {
     const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(404).send({"message": "user not found"});
+    if (!user) return sendApiResponse({
+      res: res, statusCode : 404, data: user,message:  "user not found"
+    });
+    
+   
     const ismatch = await verifyPassword(req.body.password, user.password);
-    if (!ismatch) return res.status(404).send({"message": "un authorized"});
+    if (!ismatch) return  sendApiResponse({
+      res: res, statusCode : 404, data: user,message:  "un authorized"
+    });
     user.generateToken();
-    return res.status(200).send(user);
+    return sendApiResponse({
+      res: res, statusCode : 200, data: user,message:  "Success"
+    });
   } catch (error) {
-    return  res.status(200).send(error);
+    
+    return  sendApiResponse({
+      res: res, statusCode : 400, data: error,message:  "Failed"
+    });
   }
 };
 
 export async function getSingleUser (req: Request, res: Response): Promise<Response>  {
   try {
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).send({"message": "user not found"});
+    if (!user) return  sendApiResponse({
+      res: res, statusCode : 404, data: user,message:  "user not found"
+    });
+    
+
     // if (!user) return ApiError.noResorseFound({ res: res });
-    return res.status(200).send(user);
+    return  sendApiResponse({
+      res: res, statusCode : 200, data: user,message:  "Users retrieved successfully"
+    });
+    
+
     // return ApiSuccess.sucessResponse({ res: res, object: user });
   } catch (error) {
-    return  res.status(200).send(error);
+    return  sendApiResponse({
+      res: res, statusCode : 400, data: error,message:  "Failed"
+    });
   }
 };
 
@@ -57,11 +79,12 @@ export async function insertUser (req: Request, res: Response): Promise<Response
   try {
     const user = new User(req.body);
     const saveUser = await user.save();
-    // console.log(saveUser);
-    return res.status(200).send(saveUser);
+    return sendApiResponse({
+      res: res, statusCode : 200, data: saveUser,message:  "Success"
+    });
   } catch (error) {
-    return  res.status(200).send(error);
-};
+    return handleApiError(error,  res);
+  }
 }
 // export const updateUser = async (req: Request, res: Response) => {
 //   try {
@@ -121,11 +144,17 @@ export async function insertUser (req: Request, res: Response): Promise<Response
   export async function deleteUser (req: Request, res: Response): Promise<Response>  {
     try {
       const user = await User.deleteOne({ _id: req.params.id });
-      return res.status(200).send({"message": "user deleted successfully"});
-      // return ApiSuccess.sucessResponse({ res, object: user, message: UserValidationMessages.DELETE_USER_MESSAGE });
-      // return null;
+      return sendApiResponse({
+        res: res, statusCode : 200, data: user,message:  "user deleted successfully"
+      });
+      
+  
     } catch (error) {
-      return   res.status(200).send(error);
+      return sendApiResponse({
+        res: res, statusCode : 400, data: error,message:  "Failed"
+      });
+      
+
     }
   };
   

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, response } from "express";
-import { ValidationError} from "express-validator";
-import { ROUTE_NOT_FOUND, ROUTE_NOT_FOUND_MESSAGE, SERVER_ERROR, SERVER_ERROR_MESSAGE, SOMTING_WENT_WRONG_ERROR } from "../utils/messages";
+import { Error as er } from "mongoose";
+import { ValidationError } from "express-validator";
+import { AN_UNEXPECTED_ERROR_OCCURRED, ROUTE_NOT_FOUND, ROUTE_NOT_FOUND_MESSAGE, SERVER_ERROR, SERVER_ERROR_MESSAGE, SOMTING_WENT_WRONG_ERROR, VALIDATION_ERROR } from "../utils/messages";
 
 
 
@@ -84,3 +85,84 @@ export class BadRequest extends CustomError{
         return [{message: this.message, field: this.error.message}]
     }
 }
+
+interface ApiResponse<T> {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: T;
+  }
+
+ export function sendApiResponse<T>({
+    res, statusCode = 200, data, message ="Success"
+ }: {
+    res: Response,
+    statusCode: number,
+    data: T,
+    message: string 
+ } ): Response {
+    const response: ApiResponse<T> = {
+      success: statusCode === 200 ? true : false,
+      statusCode: statusCode,
+      message: message,
+      data: data
+    };
+  
+   return res.status(statusCode).json(response);
+  }
+
+
+export function sendApiErrorResponse<Error>({
+    res, statusCode, message, data
+}:{
+    res: Response,
+    statusCode: number,
+    message: string,
+    data: Error
+}): Response {
+    
+    const response: ApiResponse<Error> = {
+      success: false,
+      statusCode: statusCode,
+      message: message,
+      data: data
+    };
+    
+  
+    return  res.status(statusCode).json(response);
+  }
+
+  function errorFormater(errorMessage: string): Record<string, string> {
+    let errors: Record<string, string> = {};
+    const allErrors = errorMessage.substring(errorMessage.indexOf(":") + 1).trim();
+  
+    const errorList = allErrors.split(",").map(a => a.trim());
+  
+    errorList.forEach((e) => {
+      const [key, value] = e.split(':').map(a => a.trim());
+      errors[key] = value;
+    });
+  
+    return errors;
+  }
+  
+
+ export function handleApiError(error: any, res: Response): Response {
+    if (error instanceof er.ValidationError) {
+      // Handle Mongoose validation error
+      return sendApiErrorResponse({
+        res: res,
+        statusCode: 400,
+        message: VALIDATION_ERROR,
+        data: errorFormater(error.toString())
+      });
+    } else {
+      // Handle other errors
+      return sendApiErrorResponse({
+        res: res,
+        statusCode: 401,
+        message: AN_UNEXPECTED_ERROR_OCCURRED,
+        data: error
+      });
+    }
+  }
