@@ -3,9 +3,9 @@ import request from "supertest";
 import app from "../src/app";
 
 import User from "../src/apis/user/model";
-import { GET_ALL_USERS } from "../src/utils/constants";
+import { GET_ALL_USERS, SIGNIN_USERS } from "../src/utils/constants";
 import mongoose from "mongoose";
-import { AN_UNEXPECTED_ERROR_OCCURRED, VALIDATION_ERROR } from "../src/utils/messages";
+import { AN_UNEXPECTED_ERROR_OCCURRED, PASSWORD_INCORRECT, USER_NOT_FOUND, VALIDATION_ERROR } from "../src/utils/messages";
 
 // const request = require("supertest");
 // const app = require("../src/app");
@@ -28,6 +28,8 @@ const testUserId2 =  new mongoose.Types.ObjectId();
 const testUserId3 =  new mongoose.Types.ObjectId();
 const testUserId4 =  new mongoose.Types.ObjectId();
 
+const emailNotExistes = "srinivasu2233@gmail.com";
+const passwordIncorect = "1234567";
 const testUser = {
     "_id": testUserId,
     "email": "test@gmail.com",
@@ -93,34 +95,32 @@ describe('User Register API', () => {
     })
 })
 
-// describe('User Login API', () => {
-//     it("User login success response", async function () {
-//         const response = await request(app).get("/user/login").send({
-//             email: testUser1.email,
-//             password: testUser1.password
-//         });
-//         expect(response.statusCode).toEqual(200);
-//         expect(response.body.object.email).toEqual(testUser1.email);
-//     });
-//     it("Email not exists login", async function () {
-//         const response = await request(app).get("/user/login").send({
-//             email: emailNotExists,
-//             password: testUser1.password
-//         });
-//         expect(response.statusCode).toEqual(400);
-//         expect(response.body.message).toEqual(GlobalValidationMessages.NO_USER_FOUND_ERROR);
-//         expect(response.body.error).toEqual(GlobalValidationMessages.USER_EMAIL_DOES_NOT_EXISTS_MESSAGE);
-//     });
-//     it("Password miss match", async function () {
-//         const response = await request(app).get("/user/login").send({
-//             email: testUser1.email,
-//             password: passwordIncorect
-//         });
-//         expect(response.statusCode).toEqual(401);
-//         expect(response.body.message).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR);
-//         expect(response.body.error).toEqual(GlobalValidationMessages.UNAUTHORIZED_ERROR_MESSAGE);
-//     })
-// })
+describe('User Login API', () => {
+    it("User login success response", async function () {
+        const response = await request(app).post(SIGNIN_USERS).send({
+            email: testUser.email,
+            password: testUser.password
+        });
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.data.email).toEqual(testUser.email);
+    });
+    it("Email not exists login", async function () {
+        const response = await request(app).post(SIGNIN_USERS).send({
+            email: emailNotExistes,
+            password: testUser.password
+        });
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toEqual(USER_NOT_FOUND);
+    });
+    it("Password miss match", async function () {
+        const response = await request(app).post(SIGNIN_USERS).send({
+            email: testUser.email,
+            password: passwordIncorect
+        });
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toEqual(PASSWORD_INCORRECT);
+    })
+})
 
 // describe('Get single user profile API', () => {
 //     it("User profile success", async function () {

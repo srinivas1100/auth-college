@@ -3,6 +3,7 @@ import User, { IUser } from "./model";
 import { verifyPassword } from "../../middleware/hash-password";
 import { Error } from "mongoose";
 import { DatabaseConnectionError, errorHandler, handleApiError, sendApiErrorResponse, sendApiResponse } from "../../middleware/error-handler";
+import { PASSWORD_INCORRECT } from "../../utils/messages";
 // import User from "../schemas/user";
 // import { hashPassword, verifyPassword } from "../helpers/bcrypt-helpers";
 // import { errorFormeter, commonError } from "../helpers/api-error-handler";
@@ -39,7 +40,7 @@ export async function signinUser  (req: Request, res: Response): Promise<Respons
    
     const ismatch = await verifyPassword(req.body.password, user.password);
     if (!ismatch) return  sendApiResponse({
-      res: res, statusCode : 404, data: user,message:  "un authorized"
+      res: res, statusCode : 404, data: null,message:  PASSWORD_INCORRECT
     });
     user.generateToken();
     return sendApiResponse({

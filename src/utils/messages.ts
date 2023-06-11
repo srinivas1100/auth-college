@@ -2,7 +2,7 @@ export const SUCCESSFULL_MESSAGE= "Fetch data successfully";
 export const NO_SUBJECT_FOUND_MESSAGE= "No subject found";
 export const NO_SUBJECT_FOUND_MESSAGE_ERROR= "No subject message found";
 export const UNAUTHORIZED_ERROR= "User not authorized";
-export const NO_USER_FOUND_ERROR= "No user found";
+export const USER_NOT_FOUND=  "user not found";
 export const SERVER_ERROR= "Server Error";
 export const SERVER_ERROR_MESSAGE= "Something went wrong, please try again after some time";
 export const UNAUTHORIZED_ERROR_MESSAGE= "User not authorized, could you please login";
@@ -15,6 +15,7 @@ export const SUBJECT_DURATINON_REQUIRED_MESSAGE= "Duration is required";
 //
 
 
+export const PASSWORD_INCORRECT = "Password mismatch";
 export const ROUTE_NOT_FOUND = "Route not found";
 export const ROUTE_NOT_FOUND_MESSAGE = "Route not found user types";
 export const SOMTING_WENT_WRONG_ERROR = "somthing went wrong";
