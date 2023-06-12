@@ -151,6 +151,7 @@ describe('Delete user API', () => {
         expect(response.statusCode).toEqual(200);
         expect(response.body.message).toEqual(DELETE_USER_MESSAGE);
     });
+    //
     // it("User not authorized", async function () {
     //     const response = await request(app).delete("/user").set('Authorization', `Bearer ${noResorseFoundToken}a`);
     //     expect(response.statusCode).toEqual(401);
