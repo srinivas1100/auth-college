@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
-import { DatabaseConnectionError } from "../middleware/error-handler";
-import { Response } from "express";
-
-const mongoURL = process.env.MONGO_URL || "";
+import { config } from "./config";
 
 const connection = async () =>{
     try {
-        await mongoose.connect(mongoURL), {
+        console.log(config.mongo.url)
+        await mongoose.connect(config.mongo.url), {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
             useFindAndModify: false
         };
+        console.log("database connected")
     } catch (error) {
         console.log(error);
     }

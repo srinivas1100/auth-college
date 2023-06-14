@@ -20,12 +20,13 @@ import { DELETE_USER_MESSAGE, PASSWORD_INCORRECT, USER_NOT_FOUND, USER_RETRIVED_
     });
   
    return sendApiResponse({
-     res: res, statusCode : 200, data: user,message:  "Users retrieved successfully"
+     res: res, statusCode : 200, data: user,message:  "Users retrieved successfully !!"
    });
 
   } catch (error) {
    return sendApiResponse({
     res: res, statusCode : 400, data: error,message:  "Users retrieved successfully"
+    
   });
   }
 };
@@ -44,7 +45,7 @@ export async function signinUser  (req: Request, res: Response): Promise<Respons
     });
     user.generateToken();
     return sendApiResponse({
-      res: res, statusCode : 200, data: user,message:  "Success"
+      res: res, statusCode : 200, data: user,message:  "Success !!!"
     });
   } catch (error) {
     

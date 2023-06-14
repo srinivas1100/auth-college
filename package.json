@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "env-cmd -f ./config/auth.env nodemon src/index.ts",
+    "dev": "nodemon src/index.ts",
     "test": "env-cmd -f ./config/test.env jest test/"
   },
   "keywords": [],
