@@ -1,9 +1,10 @@
 import e, { Request, Response } from "express";
 import User, { IUser } from "./model";
-import { verifyPassword } from "../../middleware/hash-password";
+import { verifyPassword } from "@svcollege/helper-c";
+
 import { Error } from "mongoose";
-import { DatabaseConnectionError, errorHandler, handleApiError, sendApiErrorResponse, sendApiResponse } from "../../middleware/error-handler";
-import { DELETE_USER_MESSAGE, PASSWORD_INCORRECT, USER_NOT_FOUND, USER_RETRIVED_SUCCESSFULLY } from "../../utils/messages";
+import { DatabaseConnectionError, errorHandler, handleApiError, sendApiErrorResponse, sendApiResponse } from "@svcollege/helper-c";
+import { DELETE_USER_MESSAGE, PASSWORD_INCORRECT, USER_NOT_FOUND, USER_RETRIVED_SUCCESSFULLY } from "@svcollege/helper-c";
 // import User from "../schemas/user";
 // import { hashPassword, verifyPassword } from "../helpers/bcrypt-helpers";
 // import { errorFormeter, commonError } from "../helpers/api-error-handler";

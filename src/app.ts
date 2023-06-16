@@ -6,7 +6,7 @@ import 'express-async-errors';
 connection();
 
 import { userRouter } from './apis/user/router';
-import { RouteNotFound, errorHandler } from './middleware/error-handler';
+import { RouteNotFound, errorHandler } from '@svcollege/helper-c';
 
 const app = express();
 

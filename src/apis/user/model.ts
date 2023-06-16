@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { hashPassword } from '../../middleware/hash-password';
-import { GenerateJwtToken } from '../../middleware/jwt';
-import { EMAIL_ALL_READY_EXISTS, EMAIL_IS_REQUIRED, PHONE_NUMBER_IS_REQUIRED, VALID_EMAIL_ADDRESS } from '../../utils/messages';
+import { hashPassword } from '@svcollege/helper-c';
+import { GenerateJwtToken } from '@svcollege/helper-c';
+import { EMAIL_ALL_READY_EXISTS, EMAIL_IS_REQUIRED, PHONE_NUMBER_IS_REQUIRED, VALID_EMAIL_ADDRESS } from '@svcollege/helper-c';
 // import { NextFunction } from 'express';
 
 const validateEmail = (email: string) => {
